@@ -1,0 +1,1 @@
+# EID-Calculo-Intermedio-Manim-2026
