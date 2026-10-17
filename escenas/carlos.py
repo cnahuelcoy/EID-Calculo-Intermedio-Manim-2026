@@ -1,4 +1,6 @@
+
 from manim import *
+
 
 class Introduccion(Scene):
     def construct(self):
@@ -44,6 +46,7 @@ class Introduccion(Scene):
         self.play(Write(pregunta))
         self.wait(3)
         self.play(FadeOut(pregunta))
+
 
 class FuncionAcumulacion(Scene):
     def construct(self):
@@ -149,5 +152,72 @@ class SimbolosYCondiciones(Scene):
         self.play(
             FadeOut(condicion),
             FadeOut(resultado),
+            FadeOut(titulo)
+        )
+
+
+class PresentacionEjemplo(Scene):
+    def construct(self):
+        titulo = Text(
+            "Nuestro ejemplo matematico",
+            font_size=36
+        ).to_edge(UP)
+
+        funcion = MathTex(
+            r"f(x)=2-x",
+            font_size=64,
+            color=BLUE
+        )
+
+        intervalo = MathTex(
+            r"x\in[0,4]",
+            font_size=44
+        )
+
+        continuidad = Text(
+            "Es una funcion continua en [0,4]",
+            font_size=27
+        )
+
+        datos = VGroup(
+            funcion,
+            intervalo,
+            continuidad
+        ).arrange(DOWN, buff=0.65)
+
+        self.play(Write(titulo))
+        self.wait(1)
+
+        self.play(Write(funcion))
+        self.wait(2)
+
+        self.play(FadeIn(intervalo))
+        self.wait(1)
+
+        self.play(FadeIn(continuidad))
+        self.wait(2)
+
+        self.play(FadeOut(datos))
+
+        acumulacion = MathTex(
+            r"A(x)=\int_{0}^{x}(2-t)\,dt",
+            font_size=58,
+            color=GREEN
+        )
+
+        explicacion = Text(
+            "El limite inferior permanece fijo en cero",
+            font_size=26
+        ).next_to(acumulacion, DOWN, buff=0.7)
+
+        self.play(Write(acumulacion))
+        self.wait(2)
+
+        self.play(FadeIn(explicacion))
+        self.wait(2)
+
+        self.play(
+            FadeOut(acumulacion),
+            FadeOut(explicacion),
             FadeOut(titulo)
         )
