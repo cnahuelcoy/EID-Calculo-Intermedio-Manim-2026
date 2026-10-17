@@ -1,6 +1,7 @@
 
 from manim import *
 
+
 class Introduccion(Scene):
     def construct(self):
         titulo = Text(
@@ -45,3 +46,40 @@ class Introduccion(Scene):
         self.play(Write(pregunta))
         self.wait(3)
         self.play(FadeOut(pregunta))
+
+
+class FuncionAcumulacion(Scene):
+    def construct(self):
+        titulo = Text(
+            "Funcion de acumulacion",
+            font_size=36
+        ).to_edge(UP)
+
+        formula = MathTex(
+            r"A(x)=\int_{a}^{x}f(t)\,dt",
+            font_size=56
+        )
+
+        explicacion = Text(
+            "La acumulacion depende del limite superior x",
+            font_size=25
+        ).next_to(formula, DOWN, buff=0.8)
+
+        contenido = VGroup(
+            formula,
+            explicacion
+        )
+
+        self.play(Write(titulo))
+        self.wait(1)
+
+        self.play(Write(formula))
+        self.wait(2)
+
+        self.play(FadeIn(explicacion))
+        self.wait(3)
+
+        self.play(
+            FadeOut(contenido),
+            FadeOut(titulo)
+        )
