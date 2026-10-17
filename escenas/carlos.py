@@ -1,6 +1,4 @@
-
 from manim import *
-
 
 class Introduccion(Scene):
     def construct(self):
@@ -47,7 +45,6 @@ class Introduccion(Scene):
         self.wait(3)
         self.play(FadeOut(pregunta))
 
-
 class FuncionAcumulacion(Scene):
     def construct(self):
         titulo = Text(
@@ -65,10 +62,7 @@ class FuncionAcumulacion(Scene):
             font_size=25
         ).next_to(formula, DOWN, buff=0.8)
 
-        contenido = VGroup(
-            formula,
-            explicacion
-        )
+        contenido = VGroup(formula, explicacion)
 
         self.play(Write(titulo))
         self.wait(1)
@@ -81,5 +75,79 @@ class FuncionAcumulacion(Scene):
 
         self.play(
             FadeOut(contenido),
+            FadeOut(titulo)
+        )
+
+
+class SimbolosYCondiciones(Scene):
+    def construct(self):
+        titulo = Text(
+            "Elementos de la funcion acumulada",
+            font_size=32
+        ).to_edge(UP)
+
+        formula = MathTex(
+            r"A(x)=\int_{a}^{x}f(t)\,dt",
+            font_size=54
+        ).shift(UP * 1.3)
+
+        simbolos = [
+            (r"A(x)", "Cantidad acumulada"),
+            (r"a", "Limite inferior fijo"),
+            (r"x", "Limite superior variable"),
+            (r"f(t)", "Funcion que se integra"),
+            (r"dt", "Diferencial de integracion")
+        ]
+
+        self.play(Write(titulo))
+        self.play(Write(formula))
+        self.wait(1)
+
+        for simbolo, descripcion in simbolos:
+            expresion = MathTex(
+                simbolo,
+                font_size=38,
+                color=YELLOW
+            )
+
+            texto = Text(
+                descripcion,
+                font_size=26
+            )
+
+            explicacion = VGroup(
+                expresion, texto
+            ).arrange(RIGHT, buff=0.5)
+
+            explicacion.next_to(
+                formula, DOWN, buff=0.8
+            )
+
+            self.play(FadeIn(explicacion))
+            self.wait(1)
+            self.play(FadeOut(explicacion))
+
+        self.play(FadeOut(formula))
+
+        condicion = Text(
+            "Condicion: f debe ser continua en [a, b]",
+            font_size=29
+        ).move_to(UP * 0.6)
+
+        resultado = MathTex(
+            r"A'(x)=f(x)",
+            font_size=58,
+            color=GREEN
+        ).next_to(condicion, DOWN, buff=0.7)
+
+        self.play(Write(condicion))
+        self.wait(2)
+
+        self.play(Write(resultado))
+        self.wait(2)
+
+        self.play(
+            FadeOut(condicion),
+            FadeOut(resultado),
             FadeOut(titulo)
         )
