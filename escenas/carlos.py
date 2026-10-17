@@ -221,3 +221,103 @@ class PresentacionEjemplo(Scene):
             FadeOut(explicacion),
             FadeOut(titulo)
         )
+
+
+class GraficaInicial(Scene):
+    def construct(self):
+        titulo = Text(
+            "Representacion grafica de f(x)",
+            font_size=33
+        ).to_edge(UP)
+
+        ejes = Axes(
+            x_range=[0, 4, 1],
+            y_range=[-2.5, 2.5, 1],
+            x_length=8,
+            y_length=4.5,
+            axis_config={
+                "include_numbers": True,
+                "font_size": 24
+            },
+            tips=False
+        ).shift(DOWN * 0.35)
+
+        etiquetas = ejes.get_axis_labels(
+            x_label=MathTex("x"),
+            y_label=MathTex("f(x)")
+        )
+
+        funcion = ejes.plot(
+            lambda x: 2 - x,
+            x_range=[0, 4],
+            color=BLUE,
+            stroke_width=5
+        )
+
+        formula = MathTex(
+            r"f(x)=2-x",
+            color=BLUE,
+            font_size=38
+        ).to_corner(UR).shift(DOWN * 0.6)
+
+        punto_inicial = Dot(
+            ejes.c2p(0, 2),
+            color=YELLOW
+        )
+
+        punto_cero = Dot(
+            ejes.c2p(2, 0),
+            color=YELLOW
+        )
+
+        punto_final = Dot(
+            ejes.c2p(4, -2),
+            color=YELLOW
+        )
+
+        self.play(Write(titulo))
+        self.play(Create(ejes))
+        self.play(Write(etiquetas))
+        self.wait(1)
+
+        self.play(Write(formula))
+        self.play(Create(funcion), run_time=3)
+        self.wait(1)
+
+        self.play(
+            FadeIn(punto_inicial),
+            FadeIn(punto_cero),
+            FadeIn(punto_final)
+        )
+
+        self.wait(2)
+
+        explicacion = Text(
+            "Ahora calcularemos la acumulacion",
+            font_size=28
+        ).to_edge(DOWN)
+
+        self.play(FadeIn(explicacion))
+        self.wait(2)
+
+        self.play(
+            FadeOut(titulo),
+            FadeOut(ejes),
+            FadeOut(etiquetas),
+            FadeOut(funcion),
+            FadeOut(formula),
+            FadeOut(punto_inicial),
+            FadeOut(punto_cero),
+            FadeOut(punto_final),
+            FadeOut(explicacion)
+        )
+
+        transicion = MathTex(
+            r"A(x)=\int_{0}^{x}(2-t)\,dt",
+            font_size=58,
+            color=GREEN
+        )
+
+        self.play(Write(transicion))
+        self.wait(3)
+        self.play(FadeOut(transicion))
