@@ -163,10 +163,161 @@ class IncrementoExtremoSuperior(Scene):
 
 class CocienteIncrementalYDerivada(Scene):
     def construct(self):
-        presentar_estructura(self,
-            "Cociente incremental y derivada",
-            "Estructura inicial: razón de cambio, límite y derivada.",
+        titulo = Text(
+            "Razón de cambio promedio", font_size=34,
+        ).to_edge(UP)
+
+        formula_a = MathTex(
+            r"A(x)=\int_0^x(2-t)\,dt",
+            font_size=38, color=COLOR_A,
+        ).next_to(titulo, DOWN, buff=0.25)
+
+        x = 1
+        h = 0.5
+
+        def A(u):
+            return 2 * u - u**2 / 2
+
+        
+        delta_a = A(x + h) - A(x)
+        tasa = delta_a / h
+
+        ejes = Axes(
+            x_range=[0, 4, 1],
+            y_range=[-2, 2, 1],
+            x_length=5.2,
+            y_length=3.8,
+            axis_config={"font_size": 20},
+            tips=False,
+        ).to_edge(LEFT, buff=0.8).shift(DOWN * 0.2)
+
+        ejes.add_coordinates([0, 2, 3, 4], [-2, -1, 1, 2])
+
+        etiquetas = ejes.get_axis_labels(
+            x_label=MathTex("t", font_size=26),
+            y_label=MathTex("f(t)", font_size=26),
         )
+        curva = ejes.plot(
+            lambda t: 2 - t, x_range=[0, 4], color=COLOR_F,
+        )
+        nombre_f = MathTex(
+            r"f(t)=2-t", font_size=30, color=COLOR_F,
+        ).move_to(ejes.c2p(2.8, 1.4))
+
+        area_anterior = ejes.get_area(
+            curva, x_range=[0, x], color=COLOR_A, opacity=0.25,
+        )
+        extra = ejes.get_area(
+            curva, x_range=[x, x + h], color=COLOR_H, opacity=0.5,
+        )
+        limites = VGroup(
+            DashedLine(
+                ejes.c2p(x, 0),
+                ejes.c2p(x, 2 - x),
+                color=COLOR_A,
+            ),
+            DashedLine(
+                ejes.c2p(x + h, 0),
+                ejes.c2p(x + h, 2 - x - h),
+                color=COLOR_H,
+            ),
+        )
+
+        marca_x=  MathTex("x", font_size=24, color= COLOR_A)
+        marca_x.next_to(ejes.c2p(x, 0), DOWN, buff=0.1)
+
+
+        marca_final = MathTex("x+h", font_size=24, color=COLOR_H)
+        marca_final.next_to(ejes.c2p(x + h, 0), DOWN, buff=0.1)
+
+        ancho = DoubleArrow(
+            ejes.c2p(x, -0.65),
+            ejes.c2p(x + h, -0.65),
+            color=COLOR_H, buff=0, tip_length=0.08,
+        )
+        etiqueta_h = MathTex("h", font_size=26, color=COLOR_H)
+        etiqueta_h.next_to(ancho, DOWN, buff=0.1)
+
+        datos = MathTex(
+            rf"x={x:g},\quad h={h:g}>0",
+            font_size=28,
+        ).next_to(ejes, DOWN, buff=0.35)
+
+        # Sustituimos las ecuaciones en la misma posición.
+        def ecuacion(tex):
+            expresion = MathTex(tex, font_size=34)
+            if expresion.width > 5.6:
+                expresion.scale_to_fit_width(5.6)
+            return expresion.move_to(RIGHT * 3 + UP * 0.8)
+
+        cambio = ecuacion(
+            r"\Delta A=A(x+h)-A(x)"
+        )
+        integral = ecuacion(
+            r"A(x+h)-A(x)=\int_x^{x+h}(2-t)\,dt"
+        )
+        cociente = ecuacion(
+            r"\frac{A(x+h)-A(x)}{h}"
+            r"=\frac{1}{h}\int_x^{x+h}(2-t)\,dt"
+        )
+
+        condicion = MathTex(
+            r"h\ne0", font_size=28, color=COLOR_H,
+        ).move_to(RIGHT * 3 + DOWN * 0.15)
+
+        nota = Text(
+            "La región naranja mide el cambio de acumulación.",
+            font_size=23,
+        ).to_edge(DOWN, buff=0.35)
+
+        nota_promedio = Text(
+            "Dividir por h da la razón de cambio promedio.",
+            font_size=23,
+        ).to_edge(DOWN, buff=0.35)
+
+        ejemplo = MathTex(
+            rf"\frac{{{delta_a:g}}}{{{h:g}}}={tasa:g}",
+            font_size=46, color=COLOR_H,
+        ).move_to(RIGHT * 3 + DOWN * 1.3)
+
+        self.play(Write(titulo), Write(formula_a))
+        self.play(
+            Create(ejes), Write(etiquetas),
+            Create(curva), Write(nombre_f),
+        )
+        self.play(
+            FadeIn(area_anterior), FadeIn(extra), Create(limites),
+        )
+        self.play(
+            Write(marca_x), Write(marca_final),
+            GrowArrow(ancho), Write(etiqueta_h),
+        )
+        self.play(Write(datos), Write(cambio), FadeIn(nota))
+        self.wait(2)
+
+        # Aditividad: al restar, queda el tramo entre x y x+h.
+        self.play(
+            TransformMatchingTex(cambio, integral),
+            Indicate(extra, color=COLOR_H),
+        )
+        self.wait(2)
+
+        self.play(
+            TransformMatchingTex(integral, cociente),
+            Indicate(ancho, color=COLOR_H),
+        )
+        self.play(
+            Write(condicion),
+            ReplacementTransform(nota, nota_promedio),
+        )
+        self.wait(2)
+
+        self.play(Write(ejemplo))
+        self.wait(4)
+        self.play(*[FadeOut(objeto) for objeto in self.mobjects])
+
+
+
 
 class InterpretacionAcumulacion(Scene):
     def construct(self):
