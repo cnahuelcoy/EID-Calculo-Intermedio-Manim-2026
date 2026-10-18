@@ -120,10 +120,10 @@ class IncrementoExtremoSuperior(Scene):
         cambio[0].set_color(COLOR_H)
         cambio[2].set_color(COLOR_A)
         self.play(Write(cambio))
-        self.wait(3)
+        self.wait(2)
         self.play(FadeIn(nota(
             "Si f es negativa, su aporte a la acumulación es negativo.", 22, 0.3)))
-        self.wait(3)
+        self.wait(2)
         cerrar(self)
 
 
@@ -179,7 +179,7 @@ class CocienteIncrementalYDerivada(Scene):
         self.play(Write(condicion), ReplacementTransform(detalle, promedio))
         self.wait(2)
         self.play(Write(ejemplo))
-        self.wait(4)
+        self.wait(3)
         cerrar(self)
         self.mostrar_derivada()
 
@@ -317,11 +317,12 @@ class InterpretacionAcumulacion(Scene):
                 ejes_a.c2p(x - 0.35, A(x) - 0.35 * f(x)),
                 ejes_a.c2p(x + 0.35, A(x) + 0.35 * f(x)),
                 color=COLOR_F, stroke_width=6,
-            )
+            ).set_z_index(2)
+            # Los puntos quedan por delante de las curvas y de la tangente.
             marcas = VGroup(
-                Dot(ejes_f.c2p(x, f(x)), color=COLOR_F),
-                Dot(ejes_a.c2p(x, A(x)), color=COLOR_A),
                 tangente,
+                Dot(ejes_f.c2p(x, f(x)), color=COLOR_F).set_z_index(3),
+                Dot(ejes_a.c2p(x, A(x)), color=COLOR_A).set_z_index(3),
             )
             expresion = MathTex(tex, font_size=34).move_to(DOWN * 2.65)
             grupo = VGroup(marcas, expresion, nota(explicacion, 24, 0.3))
@@ -356,7 +357,7 @@ class ConclusionYCreditos(Scene):
             "<i>Introducción a la integral: Apunte base común\n"
             "para el proyecto de investigación y visualización</i>.\nMaterial de Cálculo Intermedio.",
             font_size=28, line_spacing=0.4)
-        pantalla("Referencias bibliográficas (1/2)", apunte, 8)
+        pantalla("Referencias bibliográficas (1/2)", apunte, 6)
         libros = VGroup(
             MarkupText("Larson, R. y Edwards, B. H. (2010).\n"
                 "<i>Cálculo 1 de una variable</i> (9.ª ed.). McGraw-Hill.",
@@ -364,16 +365,16 @@ class ConclusionYCreditos(Scene):
             MarkupText("Strang, G. y Herman, E. (2016).\n<i>Calculus Volume 1</i>. OpenStax.",
                 font_size=28, line_spacing=0.4),
         ).arrange(DOWN, buff=0.8)
-        pantalla("Referencias bibliográficas (2/2)", libros, 10)
+        pantalla("Referencias bibliográficas (2/2)", libros, 7)
         declaracion = Text("«Se utilizó inteligencia artificial como herramienta\n"
             "de apoyo para resolver dudas puntuales y revisar\nerrores ortográficos en el informe.\n"
             "Los contenidos matemáticos fueron revisados\npor los integrantes del grupo».",
             font_size=28, line_spacing=0.4)
-        pantalla("Declaración de uso de IA", declaracion, 11)
+        pantalla("Declaración de uso de IA", declaracion, 8)
         proyecto = VGroup(
             Text("Herramienta de animación: Manim Community v0.22.0", font_size=28, color=COLOR_A),
             Text("Universidad Católica de Temuco", font_size=28),
             Text("Asignatura: Cálculo Intermedio", font_size=28),
             Text("Tema: Teorema Fundamental del Cálculo, Parte I", font_size=28),
         ).arrange(DOWN, buff=0.4)
-        pantalla("Créditos finales", proyecto, 5)
+        pantalla("Créditos finales", proyecto, 3)
