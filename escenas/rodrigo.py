@@ -143,7 +143,48 @@ class GraficaAcumulacion(Scene):
             self.play(FadeIn(fila[1], shift=LEFT * 0.2), run_time=0.6)
         self.wait(2)
 
-        self.play(FadeOut(VGroup(titulo, formula, filas)))
+        # Grafica de A(x) en el intervalo [0, 4]
+        self.play(FadeOut(filas), formula.animate.to_corner(UR).shift(DOWN * 0.9))
+        ejes = Axes(
+            x_range=[0, 4.5, 1], y_range=[0, 2.5, 0.5], x_length=8, y_length=4.4,
+            axis_config={"include_numbers": True, "font_size": 24}, tips=False,
+        ).shift(DOWN * 0.6)
+        etiquetas = ejes.get_axis_labels(x_label=MathTex("x"), y_label=MathTex("A(x)"))
+        curva = ejes.plot(A, x_range=[0, 4], color=COLOR_A, stroke_width=5)
+        self.play(Create(ejes), Write(etiquetas))
+        self.play(Create(curva), run_time=3)
+
+        # Los cinco puntos calculados, cada uno con su coordenada
+        direcciones = [UL, UL, UP, UR, UR]
+        puntos = VGroup()
+        for x, d in zip(range(5), direcciones):
+            punto = Dot(ejes.c2p(x, A(x)), color=YELLOW, radius=0.09)
+            texto = MathTex(rf"({x},\,{A(x):g})", font_size=28, color=YELLOW)
+            texto.next_to(punto, d, buff=0.3 if x == 2 else 0.12)
+            puntos.add(VGroup(punto, texto))
+            self.play(FadeIn(punto, scale=1.5), Write(texto), run_time=0.6)
+        self.wait(1)
+
+        # Maximo en (2, 2)
+        guia_x = DashedLine(ejes.c2p(2, 0), ejes.c2p(2, 2), color=YELLOW)
+        guia_y = DashedLine(ejes.c2p(0, 2), ejes.c2p(2, 2), color=YELLOW)
+        anillo = Circle(radius=0.2, color=YELLOW).move_to(ejes.c2p(2, 2))
+        maximo = Text("máximo: A(2) = 2", font_size=24, color=YELLOW)
+        maximo.next_to(puntos[2][1], UP, buff=0.15)
+        self.play(Create(guia_x), Create(guia_y), Create(anillo), FadeIn(maximo))
+        self.wait(2)
+
+        # Donde la acumulacion aumenta y donde disminuye
+        sube = Arrow(ejes.c2p(0.55, 0.45), ejes.c2p(1.45, 1.15), buff=0, color=WHITE)
+        baja = Arrow(ejes.c2p(2.55, 1.15), ejes.c2p(3.45, 0.45), buff=0, color=WHITE)
+        txt_sube = Text("A crece", font_size=24).next_to(sube, DOWN, buff=0.1)
+        txt_baja = Text("A decrece", font_size=24).next_to(baja, DOWN, buff=0.1)
+        self.play(GrowArrow(sube), FadeIn(txt_sube))
+        self.wait(1)
+        self.play(GrowArrow(baja), FadeIn(txt_baja))
+        self.wait(3)
+
+        self.play(*[FadeOut(m) for m in self.mobjects])
 
 
 class AreaAcumulada(Scene):
