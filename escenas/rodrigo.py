@@ -114,9 +114,36 @@ class GraficaAcumulacion(Scene):
 
     def construct(self):
         titulo = titulo_escena("Gráfica de la función acumulada")
+        formula = MathTex(r"A(x)=2x-\frac{x^{2}}{2}", font_size=44, color=COLOR_A)
+        formula.next_to(titulo, DOWN, buff=0.35)
         self.play(Write(titulo))
+        self.play(Write(formula))
         self.wait(1)
-        self.play(FadeOut(titulo))
+
+        # Calculo de los cinco puntos: A(x) se evalua con la funcion de Python,
+        # asi el numero mostrado siempre coincide con la formula.
+        filas = VGroup()
+        for x in range(5):
+            valor = f"{A(x):g}"  # 0, 1.5, 2, 1.5, 0
+            calculo = MathTex(
+                rf"A({x})=2({x})-\frac{{{x}^{{2}}}}{{2}}={valor}", font_size=36
+            )
+            calculo[0][:4].set_color(COLOR_A)
+            coordenada = MathTex(rf"\rightarrow\ ({x},\,{valor})", font_size=36, color=YELLOW)
+            filas.add(VGroup(calculo, coordenada).arrange(RIGHT, buff=0.4))
+        filas.arrange(DOWN, aligned_edge=LEFT, buff=0.25)
+        filas.next_to(formula, DOWN, buff=0.45)
+        # Alinear las flechas en una misma columna
+        borde = max(fila[0].get_right()[0] for fila in filas) + 0.4
+        for fila in filas:
+            fila[1].shift(RIGHT * (borde - fila[1].get_left()[0]))
+
+        for fila in filas:
+            self.play(Write(fila[0]), run_time=1.2)
+            self.play(FadeIn(fila[1], shift=LEFT * 0.2), run_time=0.6)
+        self.wait(2)
+
+        self.play(FadeOut(VGroup(titulo, formula, filas)))
 
 
 class AreaAcumulada(Scene):
