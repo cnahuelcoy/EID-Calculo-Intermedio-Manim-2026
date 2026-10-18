@@ -1,14 +1,10 @@
 from manim import *
 
-#parte 3: Matias Salinas
-#Etapa 1 estructura inicial
-
 config.background_color= "#10141C"
 config.pixel_width= 1920
 config.pixel_height= 1080
 config.frame_rate= 30 
 
-#Colores acordados 
 COLOR_F = BLUE
 COLOR_A = GREEN
 COLOR_H = ORANGE
@@ -607,10 +603,31 @@ class InterpretacionAcumulacion(Scene):
         self.play(*[FadeOut(objeto) for objeto in self.mobjects])
 
 class ConclusionYCreditos(Scene):
-     def construct(self):
-        presentar_estructura(
-            self,
-            "Conclusión y créditos",
-            "Estructura inicial: respuesta central y cierre del grupo.",
-        )
+    def construct(self):
+        titulo = Text("Conclusión", font_size=34).to_edge(UP)
+        resultado = MathTex(
+            r"A'(x)=2-x=f(x)", font_size=54, color=COLOR_A,
+        ).shift(UP * 0.7)
+        mensaje = Text(
+            "La integral acumula aportes con signo.\n"
+            "La derivada recupera la función continua\n"
+            "como razón de cambio instantánea.",
+            font_size=28, line_spacing=1.2,
+        ).next_to(resultado, DOWN, buff=0.7)
+        creditos = VGroup(
+            Text("Grupo 8 · Cálculo Intermedio", font_size=32),
+            Text("Carlos Nahuelcoy · Rodrigo Sevilla · Matías Salinas", font_size=26),
+            Text("Animación realizada con Manim Community", font_size=24),
+            Text("Referencias matemáticas: pendientes del grupo", font_size=20, color=GRAY_B),
+            Text("Declaración de uso de IA: pendiente del grupo", font_size=20, color=GRAY_B),
+        ).arrange(DOWN, buff=0.35)
+        self.play(Write(titulo), run_time=1)
+        self.play(Write(resultado), FadeIn(mensaje), run_time=1)
+        self.wait(4)
+        self.play(FadeOut(VGroup(titulo, resultado, mensaje)), run_time=1)
+        self.play(FadeIn(creditos), run_time=1)
+        self.wait(4)
+        self.play(FadeOut(creditos), run_time=1)
+
+
 
