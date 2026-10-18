@@ -52,7 +52,7 @@ class ResolucionIntegral(Scene):
         paso1[0].set_color(COLOR_A)
         paso1[3].set_color(COLOR_F)
         self.play(Write(paso1))
-        self.wait(1)
+        self.wait(0.5)
 
         # 2. Limites: glifos de la integral -> [0] simbolo, [1] x, [2] 0
         lim_sup, lim_inf = paso1[2][1], paso1[2][2]
@@ -64,9 +64,9 @@ class ResolucionIntegral(Scene):
         flecha_sup = Arrow(txt_sup.get_bottom(), lim_sup.get_top(), buff=0.1, color=YELLOW)
 
         self.play(lim_inf.animate.set_color(YELLOW), GrowArrow(flecha_inf), FadeIn(txt_inf))
-        self.wait(1.5)
+        self.wait(1)
         self.play(lim_sup.animate.set_color(YELLOW), GrowArrow(flecha_sup), FadeIn(txt_sup))
-        self.wait(1.5)
+        self.wait(1)
         self.play(FadeOut(VGroup(txt_inf, txt_sup, flecha_inf, flecha_sup)))
 
         # 3. Reglas de integracion aplicadas termino a termino
@@ -76,13 +76,13 @@ class ResolucionIntegral(Scene):
         ).arrange(RIGHT, buff=1.2).next_to(paso1, DOWN, buff=0.8)
         texto = nota("Integramos término a término (regla de la potencia)")
         self.play(FadeIn(reglas, shift=UP * 0.3), FadeIn(texto))
-        self.wait(2.5)
+        self.wait(1.5)
 
         # 4. Antiderivada evaluada entre 0 y x
         paso2 = ecuacion(r"\left[\,2t-\frac{t^{2}}{2}\,\right]_{0}^{x}")
         paso2[0].set_color(COLOR_A)
         self.play(TransformMatchingTex(paso1, paso2), FadeOut(reglas))
-        self.wait(2)
+        self.wait(1.2)
 
         # 5. Evaluacion de los limites: valor en x menos valor en 0
         paso3 = ecuacion(
@@ -92,12 +92,12 @@ class ResolucionIntegral(Scene):
         paso3[0].set_color(COLOR_A)
         texto2 = nota("Evaluamos: valor en x menos valor en 0")
         self.play(TransformMatchingTex(paso2, paso3), ReplacementTransform(texto, texto2))
-        self.wait(2.5)
+        self.wait(1.5)
 
         paso4 = ecuacion(r"\left(2x-\frac{x^{2}}{2}\right)", "-", "0")
         paso4[0].set_color(COLOR_A)
         self.play(TransformMatchingTex(paso3, paso4))
-        self.wait(1.5)
+        self.wait(1)
 
         # 6. Resultado final destacado
         resultado = ecuacion(r"2x-\frac{x^{2}}{2}").set_color(COLOR_A)
@@ -105,7 +105,7 @@ class ResolucionIntegral(Scene):
         texto3 = nota("Esta es la función de acumulación")
         self.play(TransformMatchingTex(paso4, resultado), ReplacementTransform(texto2, texto3))
         self.play(Create(caja))
-        self.wait(3)
+        self.wait(1.8)
         self.play(FadeOut(VGroup(titulo, resultado, caja, texto3)))
 
 
@@ -118,7 +118,7 @@ class GraficaAcumulacion(Scene):
         formula.next_to(titulo, DOWN, buff=0.35)
         self.play(Write(titulo))
         self.play(Write(formula))
-        self.wait(1)
+        self.wait(0.5)
 
         # Calculo de los cinco puntos: A(x) se evalua con la funcion de Python,
         # asi el numero mostrado siempre coincide con la formula.
@@ -141,7 +141,7 @@ class GraficaAcumulacion(Scene):
         for fila in filas:
             self.play(Write(fila[0]), run_time=1.2)
             self.play(FadeIn(fila[1], shift=LEFT * 0.2), run_time=0.6)
-        self.wait(2)
+        self.wait(1.2)
 
         # Grafica de A(x) en el intervalo [0, 4]
         self.play(FadeOut(filas), formula.animate.to_corner(UR).shift(DOWN * 0.9))
@@ -163,7 +163,7 @@ class GraficaAcumulacion(Scene):
             texto.next_to(punto, d, buff=0.3 if x == 2 else 0.12)
             puntos.add(VGroup(punto, texto))
             self.play(FadeIn(punto, scale=1.5), Write(texto), run_time=0.6)
-        self.wait(1)
+        self.wait(0.5)
 
         # Maximo en (2, 2)
         guia_x = DashedLine(ejes.c2p(2, 0), ejes.c2p(2, 2), color=YELLOW)
@@ -172,7 +172,7 @@ class GraficaAcumulacion(Scene):
         maximo = Text("máximo: A(2) = 2", font_size=24, color=YELLOW)
         maximo.next_to(puntos[2][1], UP, buff=0.15)
         self.play(Create(guia_x), Create(guia_y), Create(anillo), FadeIn(maximo))
-        self.wait(2)
+        self.wait(1.2)
 
         # Donde la acumulacion aumenta y donde disminuye
         sube = Arrow(ejes.c2p(0.55, 0.45), ejes.c2p(1.45, 1.15), buff=0, color=WHITE)
@@ -180,9 +180,9 @@ class GraficaAcumulacion(Scene):
         txt_sube = Text("A crece", font_size=24).next_to(sube, DOWN, buff=0.1)
         txt_baja = Text("A decrece", font_size=24).next_to(baja, DOWN, buff=0.1)
         self.play(GrowArrow(sube), FadeIn(txt_sube))
-        self.wait(1)
+        self.wait(0.5)
         self.play(GrowArrow(baja), FadeIn(txt_baja))
-        self.wait(3)
+        self.wait(1.8)
 
         self.play(*[FadeOut(m) for m in self.mobjects])
 
@@ -205,7 +205,7 @@ class AreaAcumulada(Scene):
         formula_f.next_to(ejes_f, UP, buff=0.1).shift(RIGHT * 1.5)
         self.play(Create(ejes_f), Write(etiquetas_f))
         self.play(Create(graf_f), Write(formula_f))
-        self.wait(1)
+        self.wait(0.5)
 
         # Region donde f >= 0 (aporte positivo) y donde f < 0 (aporte negativo)
         area_pos = ejes_f.get_area(graf_f, x_range=[0, 2], color=BLUE, opacity=0.35)
@@ -228,16 +228,102 @@ class AreaAcumulada(Scene):
         self.play(FadeIn(area_pos), Write(signo_pos))
         self.bring_to_front(ejes_f, graf_f)
         self.play(Write(panel[0]))
-        self.wait(1.5)
+        self.wait(1)
         self.play(FadeIn(area_neg), Write(signo_neg))
         self.bring_to_front(ejes_f, graf_f)  # numeros y curva sobre el relleno
         self.play(Write(panel[1]))
-        self.wait(1.5)
+        self.wait(1)
 
         # Area geometrica (siempre positiva) frente a acumulacion con signo
         self.play(Write(geometrica))
-        self.wait(1.5)
+        self.wait(1)
         self.play(Write(neta))
-        self.wait(3)
+        self.wait(1.2)
+        self.play(FadeOut(VGroup(panel, area_pos, area_neg, signo_pos, signo_neg)))
 
+        # Panel derecho: A(x) con la misma escala que el panel izquierdo
+        ejes_A = Axes(
+            x_range=[0, 4.5, 1], y_range=[0, 2.5, 1], x_length=5.0, y_length=2.2,
+            axis_config={"include_numbers": True, "font_size": 22}, tips=False,
+        ).to_edge(RIGHT, buff=0.9)
+        ejes_A.shift(UP * (ejes_f.c2p(0, 0)[1] - ejes_A.c2p(0, 0)[1]))
+        etiquetas_A = ejes_A.get_axis_labels(x_label=MathTex("x"), y_label=MathTex("A(x)"))
+        fondo_A = ejes_A.plot(A, x_range=[0, 4], color=COLOR_A, stroke_opacity=0.25)
+        self.play(Create(ejes_A), Write(etiquetas_A), Create(fondo_A))
+
+        # Limite inferior fijo en 0
+        fijo = Dot(ejes_f.c2p(0, 0), color=YELLOW, radius=0.09)
+        txt_fijo = MathTex("a=0", font_size=28, color=YELLOW).next_to(fijo, LEFT, buff=0.1)
+        texto = nota("El límite inferior queda fijo en 0; el extremo x se desplaza")
+        self.play(FadeIn(fijo), Write(txt_fijo), FadeIn(texto))
+
+        # Extremo superior x variable (ValueTracker) y objetos que dependen de el
+        x = ValueTracker(0.01)
+
+        def area_variable():
+            xv = x.get_value()
+            area = VGroup(ejes_f.get_area(
+                graf_f, x_range=[0, min(xv, 2)], color=BLUE, opacity=0.35))
+            if xv > 2.01:
+                area.add(ejes_f.get_area(graf_f, x_range=[2, xv], color=RED, opacity=0.35))
+            return area
+
+        def etiqueta_x():
+            xv = x.get_value()
+            lado = DOWN * 0.65 if xv <= 2 else UP * 0.3
+            return MathTex("x", color=COLOR_H, font_size=34).move_to(ejes_f.c2p(xv, 0) + lado)
+
+        area = always_redraw(area_variable)
+        linea_f = always_redraw(lambda: Line(
+            ejes_f.c2p(x.get_value(), 0), ejes_f.c2p(x.get_value(), f(x.get_value())),
+            color=COLOR_H, stroke_width=4))
+        marca_x = always_redraw(etiqueta_x)
+        curva_A = always_redraw(lambda: ejes_A.plot(
+            A, x_range=[0, x.get_value()], color=COLOR_A, stroke_width=5))
+        linea_A = always_redraw(lambda: Line(
+            ejes_A.c2p(x.get_value(), 0), ejes_A.c2p(x.get_value(), A(x.get_value())),
+            color=COLOR_H, stroke_width=4))
+        punto_A = always_redraw(lambda: Dot(
+            ejes_A.c2p(x.get_value(), A(x.get_value())), color=COLOR_A, radius=0.09))
+
+        # Lectura numerica de x y A(x)
+        valor_x = DecimalNumber(0, num_decimal_places=2, font_size=34, color=COLOR_H)
+        valor_A = DecimalNumber(0, num_decimal_places=2, font_size=34, color=COLOR_A)
+        lectura = VGroup(
+            MathTex("x=", font_size=34, color=COLOR_H), valor_x,
+            MathTex(r"\quad A(x)=", font_size=34, color=COLOR_A), valor_A,
+        ).arrange(RIGHT, buff=0.15).next_to(ejes_A, DOWN, buff=0.8)
+        valor_x.add_updater(lambda m: m.set_value(x.get_value()))
+        valor_A.add_updater(lambda m: m.set_value(A(x.get_value())))
+
+        self.add(area, linea_f, linea_A, curva_A)
+        self.bring_to_front(ejes_f, graf_f)
+        self.add(marca_x, punto_A)
+        self.play(FadeIn(lectura))
+
+        # 0 <= x <= 2: f >= 0, el area se suma y A crece
+        self.play(ReplacementTransform(texto, texto := nota(
+            "Para 0 ≤ x ≤ 2, f ≥ 0: el área se suma y A(x) crece")))
+        self.play(x.animate.set_value(2), run_time=3.5, rate_func=linear)
+        self.wait(0.5)
+
+        # x > 2: f < 0, los aportes restan y A disminuye
+        self.play(ReplacementTransform(texto, texto := nota(
+            "Para x > 2, f < 0: los aportes restan y A(x) disminuye")))
+        self.play(x.animate.set_value(4), run_time=3.5, rate_func=linear)
+        self.wait(0.5)
+
+        self.play(ReplacementTransform(texto, texto := nota(
+            "En x = 4 lo sumado y lo restado se compensan: A(4) = 0")))
+        self.wait(1.2)
+
+        # Transicion hacia la parte de Matias: el incremento h
+        self.play(x.animate.set_value(1), run_time=2)
+        pregunta = Text("¿Cuánto cambia A(x) si x aumenta un poco, en h?",
+                        font_size=28, color=COLOR_H).to_edge(DOWN, buff=0.8)
+        self.play(ReplacementTransform(texto, pregunta))
+        self.wait(1.8)
+
+        valor_x.clear_updaters()
+        valor_A.clear_updaters()
         self.play(*[FadeOut(m) for m in self.mobjects])
