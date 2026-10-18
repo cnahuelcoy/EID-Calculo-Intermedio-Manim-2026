@@ -315,9 +315,237 @@ class CocienteIncrementalYDerivada(Scene):
         self.play(Write(ejemplo))
         self.wait(4)
         self.play(*[FadeOut(objeto) for objeto in self.mobjects])
+        self.mostrar_derivada()
 
+    def mostrar_derivada(self):
+        titulo = Text(
+            "Del cociente a la derivada", font_size=34,
+        ).to_edge(UP)
 
+        condiciones = MathTex(
+            r"0<x<4,\quad h\ne0,\quad x+h\in[0,4]",
+            font_size=28, color=COLOR_H,
+        ).next_to(titulo, DOWN, buff=0.3)
 
+        base = MathTex(
+            r"A(x)=2x-\frac{x^2}{2}",
+            font_size=40, color=COLOR_A,
+        ).move_to(UP * 1.3)
+
+        def formula(tex):
+            expresion = MathTex(tex, font_size=42)
+            if expresion.width > 12.4:
+                expresion.scale_to_fit_width(12.4)
+            return expresion.move_to(DOWN * 0.3)
+
+        paso = formula(
+            r"A'(x)=\lim_{h\to0}\frac{A(x+h)-A(x)}{h}"
+        )
+        nota = Text(
+            "Usamos la definición de derivada.", font_size=24,
+        ).to_edge(DOWN, buff=0.65)
+
+        self.play(Write(titulo), Write(condiciones), Write(base))
+        self.play(Write(paso), FadeIn(nota))
+        self.wait(1)
+
+        pasos = [
+            (
+                r"A(x+h)=2(x+h)-\frac{(x+h)^2}{2}",
+                "Evaluamos la acumulación en x+h.",
+            ),
+            (
+                r"A(x+h)-A(x)=\left[2(x+h)-\frac{(x+h)^2}{2}\right]"
+                r"-\left[2x-\frac{x^2}{2}\right]",
+                "Restamos la acumulación anterior, conservando los signos.",
+            ),
+            (
+                r"A(x+h)-A(x)=2x+2h-\frac{x^2+2xh+h^2}{2}"
+                r"-2x+\frac{x^2}{2}",
+                "Desarrollamos el cuadrado y distribuimos el signo menos.",
+            ),
+            (
+                r"A(x+h)-A(x)=2h-xh-\frac{h^2}{2}",
+                "Cancelamos los términos iguales y reducimos.",
+            ),
+            (
+                r"A(x+h)-A(x)=h\left(2-x-\frac{h}{2}\right)",
+                "Factorizamos el incremento h.",
+            ),
+            (
+                r"\frac{A(x+h)-A(x)}{h}=2-x-\frac{h}{2}",
+                "Dividimos por h, que es distinto de cero.",
+            ),
+        ]
+
+        for tex, explicacion in pasos:
+            siguiente = formula(tex)
+            nueva_nota = Text(
+                explicacion, font_size=24,
+            ).to_edge(DOWN, buff=0.65)
+
+            self.play(
+                TransformMatchingTex(paso, siguiente),
+                ReplacementTransform(nota, nueva_nota),
+            )
+            self.wait(1)
+            paso, nota = siguiente, nueva_nota
+
+        self.play(*[FadeOut(objeto) for objeto in self.mobjects])
+
+        titulo = Text(
+            "Cuando h tiende a cero", font_size=34,
+        ).to_edge(UP)
+
+        x = 1
+        h = ValueTracker(0.5)
+
+        ejes = Axes(
+            x_range=[0, 4, 1],
+            y_range=[-2, 2, 1],
+            x_length=5.2,
+            y_length=3.8,
+            axis_config={"font_size": 20},
+            tips=False,
+        ).to_edge(LEFT, buff=0.8).shift(DOWN * 0.2)
+
+        ejes.add_coordinates([0, 2, 3, 4], [-2, -1, 1, 2])
+        etiquetas = ejes.get_axis_labels(
+            x_label=MathTex("t", font_size=26),
+            y_label=MathTex("f(t)", font_size=26),
+        )
+        curva = ejes.plot(
+            lambda t: 2 - t, x_range=[0, 4], color=COLOR_F,
+        )
+
+        referencia = DashedLine(
+            ejes.c2p(0, 2 - x),
+            ejes.c2p(4, 2 - x),
+            color=COLOR_F, stroke_opacity=0.5,
+        )
+        punto = Dot(ejes.c2p(x, 2 - x), color=COLOR_F)
+
+        datos = MathTex(
+            r"x=1,\quad f(1)=1",
+            font_size=30, color=COLOR_F,
+        ).next_to(ejes, DOWN, buff=0.35)
+
+        extra = always_redraw(lambda: ejes.get_area(
+            curva,
+            x_range=[x, x + h.get_value()],
+            color=COLOR_H,
+            opacity=0.5,
+        ))
+        extremo = always_redraw(lambda: Line(
+            ejes.c2p(x + h.get_value(), 0),
+            ejes.c2p(x + h.get_value(), 2 - x - h.get_value()),
+            color=COLOR_H,
+        ))
+        promedio = always_redraw(lambda: DashedLine(
+            ejes.c2p(0, 2 - x - h.get_value() / 2),
+            ejes.c2p(4, 2 - x - h.get_value() / 2),
+            color=COLOR_H,
+        ))
+        ancho = always_redraw(lambda: Line(
+            ejes.c2p(x, -0.65),
+            ejes.c2p(x + h.get_value(), -0.65),
+            color=COLOR_H, stroke_width=5,
+        ))
+
+        etiqueta_h = MathTex("h", font_size=26, color=COLOR_H)
+        etiqueta_h.add_updater(
+            lambda m: m.next_to(ancho, DOWN, buff=0.1)
+        )
+
+        limite = MathTex(
+            r"A'(x)=\lim_{h\to0}\left(2-x-\frac{h}{2}\right)",
+            font_size=36,
+        ).scale_to_fit_width(5.7).move_to(RIGHT * 3 + UP * 1.2)
+
+        valor_h = DecimalNumber(
+            0.5, num_decimal_places=3,
+            font_size=32, color=COLOR_H,
+        )
+        valor_tasa = DecimalNumber(
+            0.75, num_decimal_places=3,
+            font_size=32, color=COLOR_H,
+        )
+        valor_h.add_updater(
+            lambda m: m.set_value(h.get_value())
+        )
+        valor_tasa.add_updater(
+            lambda m: m.set_value(2 - x - h.get_value() / 2)
+        )
+
+        lecturas = VGroup(
+            VGroup(
+                MathTex("h=", font_size=32), valor_h,
+            ).arrange(RIGHT, buff=0.2),
+            VGroup(
+                MathTex(r"\frac{\Delta A}{h}=", font_size=32),
+                valor_tasa,
+            ).arrange(RIGHT, buff=0.2),
+        ).arrange(DOWN, buff=0.35, aligned_edge=LEFT)
+
+        lecturas.move_to(RIGHT * 3 + DOWN * 0.8)
+
+        rotulo = Text(
+            "Tasa promedio", font_size=24, color=COLOR_H,
+        ).next_to(lecturas, UP, buff=0.3)
+
+        nota = Text(
+            "Figura: h>0. El álgebra también vale para h<0.",
+            font_size=23,
+        ).to_edge(DOWN, buff=0.35)
+
+        self.play(
+            Write(titulo), Create(ejes),
+            Write(etiquetas), Create(curva),
+        )
+        self.add(extra, extremo, promedio, ancho, etiqueta_h)
+        self.bring_to_front(ejes, etiquetas, curva)
+
+        self.play(
+            Create(referencia), FadeIn(punto),
+            Write(datos), Write(limite),
+        )
+        self.play(FadeIn(lecturas), FadeIn(rotulo), FadeIn(nota))
+        self.wait(1)
+
+        self.play(h.animate.set_value(0.1), run_time=3)
+        self.wait(1)
+        self.play(h.animate.set_value(0.02), run_time=3)
+        self.wait(2)
+
+        for objeto in (
+            extra, extremo, promedio, ancho,
+            etiqueta_h, valor_h, valor_tasa,
+        ):
+            objeto.clear_updaters()
+
+        self.play(*[FadeOut(objeto) for objeto in self.mobjects])
+
+        resultado = MathTex(
+            r"A'(x)=2-x=f(x)", font_size=60, color=COLOR_A,
+        )
+        caja = SurroundingRectangle(
+            resultado, color=COLOR_A, buff=0.3,
+        )
+        continuidad = Text(
+            "f(t)=2-t es continua en [0,4]: "
+            "se cumplen las condiciones del TFC I.",
+            font_size=25,
+        ).next_to(resultado, DOWN, buff=0.8)
+
+        interior = MathTex(
+            r"0<x<4", font_size=30,
+        ).next_to(continuidad, DOWN, buff=0.35)
+
+        self.play(Write(resultado), Create(caja))
+        self.play(FadeIn(continuidad), Write(interior))
+        self.wait(3)
+        self.play(*[FadeOut(objeto) for objeto in self.mobjects])
+    
 
 class InterpretacionAcumulacion(Scene):
     def construct(self):
@@ -326,6 +554,7 @@ class InterpretacionAcumulacion(Scene):
             "Interpretación de la acumulación",
             "Estructura inicial: crecimiento, máximo y decrecimiento.",
         )
+
 
 class ConclusionYCreditos(Scene):
      def construct(self):
