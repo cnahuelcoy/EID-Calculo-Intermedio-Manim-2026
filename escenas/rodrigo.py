@@ -193,5 +193,51 @@ class AreaAcumulada(Scene):
     def construct(self):
         titulo = titulo_escena("Interpretación del área acumulada")
         self.play(Write(titulo))
+
+        # Funcion original f(t) = 2 - t en el panel izquierdo
+        ejes_f = Axes(
+            x_range=[0, 4.5, 1], y_range=[-2.5, 2.5, 1], x_length=5.0, y_length=4.4,
+            axis_config={"include_numbers": True, "font_size": 22}, tips=False,
+        ).to_edge(LEFT, buff=0.9).shift(DOWN * 0.4)
+        etiquetas_f = ejes_f.get_axis_labels(x_label=MathTex("t"), y_label=MathTex("f(t)"))
+        graf_f = ejes_f.plot(f, x_range=[0, 4], color=COLOR_F, stroke_width=5)
+        formula_f = MathTex(r"f(t)=2-t", font_size=36, color=COLOR_F)
+        formula_f.next_to(ejes_f, UP, buff=0.1).shift(RIGHT * 1.5)
+        self.play(Create(ejes_f), Write(etiquetas_f))
+        self.play(Create(graf_f), Write(formula_f))
         self.wait(1)
-        self.play(FadeOut(titulo))
+
+        # Region donde f >= 0 (aporte positivo) y donde f < 0 (aporte negativo)
+        area_pos = ejes_f.get_area(graf_f, x_range=[0, 2], color=BLUE, opacity=0.35)
+        area_neg = ejes_f.get_area(graf_f, x_range=[2, 4], color=RED, opacity=0.35)
+        signo_pos = MathTex("+", font_size=48).move_to(ejes_f.c2p(0.65, 0.6))
+        signo_neg = MathTex("-", font_size=48).move_to(ejes_f.c2p(3.35, -0.6))
+
+        aporte_pos = MathTex(r"\int_{0}^{2}(2-t)\,dt=2", font_size=36, color=BLUE)
+        aporte_neg = MathTex(r"\int_{2}^{4}(2-t)\,dt=-2", font_size=36, color=RED)
+        texto_pos = Text("aporte positivo (f ≥ 0)", font_size=22, color=BLUE)
+        texto_neg = Text("aporte negativo (f < 0)", font_size=22, color=RED)
+        geometrica = MathTex(r"\text{Área geométrica}=2+2=4", font_size=34)
+        neta = MathTex(r"\text{Acumulación neta}=A(4)=2+(-2)=0", font_size=34, color=COLOR_A)
+        panel = VGroup(
+            VGroup(aporte_pos, texto_pos).arrange(DOWN, buff=0.15),
+            VGroup(aporte_neg, texto_neg).arrange(DOWN, buff=0.15),
+            geometrica, neta,
+        ).arrange(DOWN, buff=0.45).to_edge(RIGHT, buff=0.6).shift(DOWN * 0.3)
+
+        self.play(FadeIn(area_pos), Write(signo_pos))
+        self.bring_to_front(ejes_f, graf_f)
+        self.play(Write(panel[0]))
+        self.wait(1.5)
+        self.play(FadeIn(area_neg), Write(signo_neg))
+        self.bring_to_front(ejes_f, graf_f)  # numeros y curva sobre el relleno
+        self.play(Write(panel[1]))
+        self.wait(1.5)
+
+        # Area geometrica (siempre positiva) frente a acumulacion con signo
+        self.play(Write(geometrica))
+        self.wait(1.5)
+        self.play(Write(neta))
+        self.wait(3)
+
+        self.play(*[FadeOut(m) for m in self.mobjects])
