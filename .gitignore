@@ -1,0 +1,9 @@
+# Entorno virtual local de Python
+/.venv/
+
+# Caché generada por Python
+__pycache__/
+*.py[cod]
+
+# Archivos generados por Manim
+/media/
