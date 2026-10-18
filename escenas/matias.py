@@ -614,20 +614,69 @@ class ConclusionYCreditos(Scene):
             "como razón de cambio instantánea.",
             font_size=28, line_spacing=1.2,
         ).next_to(resultado, DOWN, buff=0.7)
-        creditos = VGroup(
-            Text("Grupo 8 · Cálculo Intermedio", font_size=32),
-            Text("Carlos Nahuelcoy · Rodrigo Sevilla · Matías Salinas", font_size=26),
-            Text("Animación realizada con Manim Community", font_size=24),
-            Text("Referencias matemáticas: pendientes del grupo", font_size=20, color=GRAY_B),
-            Text("Declaración de uso de IA: pendiente del grupo", font_size=20, color=GRAY_B),
-        ).arrange(DOWN, buff=0.35)
         self.play(Write(titulo), run_time=1)
         self.play(Write(resultado), FadeIn(mensaje), run_time=1)
         self.wait(4)
         self.play(FadeOut(VGroup(titulo, resultado, mensaje)), run_time=1)
-        self.play(FadeIn(creditos), run_time=1)
-        self.wait(4)
-        self.play(FadeOut(creditos), run_time=1)
+
+        def mostrar_pantalla(encabezado, contenido, pausa):
+            titulo = Text(encabezado, font_size=34).to_edge(UP)
+            if contenido.width > 12.2:
+                contenido.scale_to_fit_width(12.2)
+            contenido.move_to(DOWN * 0.2)
+            self.play(FadeIn(titulo), FadeIn(contenido), run_time=0.6)
+            self.wait(pausa)
+            self.play(FadeOut(titulo), FadeOut(contenido), run_time=0.6)
+
+        integrantes = VGroup(
+            Text("Ingeniería Civil en Informática", font_size=28),
+            Text("Carlos Nahuelcoy", font_size=30),
+            Text("Rodrigo Sevilla", font_size=30),
+            Text("Matías Salinas", font_size=30),
+        ).arrange(DOWN, buff=0.35)
+        mostrar_pantalla("Grupo 8", integrantes, 5)
+
+        apunte = MarkupText(
+            "Universidad Católica de Temuco. (s. f.).\n"
+            "<i>Introducción a la integral: Apunte base común\n"
+            "para el proyecto de investigación y visualización</i>.\n"
+            "Material de Cálculo Intermedio.",
+            font_size=28, line_spacing=0.4,
+        )
+        mostrar_pantalla("Referencias bibliográficas (1/2)", apunte, 8)
+
+        libros = VGroup(
+            MarkupText(
+                "Larson, R. y Edwards, B. H. (2010).\n"
+                "<i>Cálculo 1 de una variable</i> (9.ª ed.). McGraw-Hill.",
+                font_size=28, line_spacing=0.4,
+            ),
+            MarkupText(
+                "Strang, G. y Herman, E. (2016).\n"
+                "<i>Calculus Volume 1</i>. OpenStax.",
+                font_size=28, line_spacing=0.4,
+            ),
+        ).arrange(DOWN, buff=0.8)
+        mostrar_pantalla("Referencias bibliográficas (2/2)", libros, 10)
+
+        declaracion = Text(
+            "«Se utilizó inteligencia artificial como herramienta\n"
+            "de apoyo para resolver dudas puntuales y revisar\n"
+            "errores ortográficos en el informe.\n"
+            "Los contenidos matemáticos fueron revisados\n"
+            "por los integrantes del grupo».",
+            font_size=28, line_spacing=0.4,
+        )
+        mostrar_pantalla("Declaración de uso de IA", declaracion, 11)
+
+        proyecto = VGroup(
+            Text("Herramienta de animación: Manim Community v0.22.0",
+                 font_size=28, color=COLOR_A),
+            Text("Universidad Católica de Temuco", font_size=28),
+            Text("Asignatura: Cálculo Intermedio", font_size=28),
+            Text("Tema: Teorema Fundamental del Cálculo, Parte I", font_size=28),
+        ).arrange(DOWN, buff=0.4)
+        mostrar_pantalla("Créditos finales", proyecto, 5)
 
 
 
