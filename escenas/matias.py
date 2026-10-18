@@ -549,12 +549,62 @@ class CocienteIncrementalYDerivada(Scene):
 
 class InterpretacionAcumulacion(Scene):
     def construct(self):
-        presentar_estructura(
-            self,
-            "Interpretación de la acumulación",
-            "Estructura inicial: crecimiento, máximo y decrecimiento.",
-        )
+        def f(u):
+            return 2 - u
+        def A(u):
+            return 2 * u - u**2 / 2
 
+        titulo = Text("Interpretación de la acumulación", font_size=34).to_edge(UP)
+        relacion = MathTex(r"A'(x)=f(x)=2-x", color=COLOR_F, font_size=40)
+        relacion.next_to(titulo, DOWN, buff=0.25)
+        estilo = {
+            "x_range": [0, 4, 1], "x_length": 5.2, "tips": False,
+            "axis_config": {"include_numbers": True, "font_size": 20},
+        }
+        ejes_f = Axes(y_range=[-2, 2, 1], y_length=3.4, **estilo)
+        ejes_f.to_edge(LEFT, buff=0.8).shift(DOWN * 0.2)
+        ejes_a = Axes(y_range=[0, 2.5, 1], y_length=2.125, **estilo)
+        ejes_a.to_edge(RIGHT, buff=0.8)
+        ejes_a.shift(UP * (ejes_f.c2p(0, 0)[1] - ejes_a.c2p(0, 0)[1]))
+        curvas = VGroup(
+            ejes_f.plot(f, x_range=[0, 4], color=COLOR_F),
+            ejes_a.plot(A, x_range=[0, 4], color=COLOR_A),
+        )
+        etiquetas = VGroup(
+            ejes_f.get_axis_labels(MathTex("x", font_size=24), MathTex("f(x)", font_size=24)),
+            ejes_a.get_axis_labels(MathTex("x", font_size=24), MathTex("A(x)", font_size=24)),
+        )
+        nombre_a = MathTex(r"A(x)=2x-\frac{x^2}{2}", color=COLOR_A, font_size=30)
+        nombre_a.move_to(ejes_a.c2p(2.2, 2.65))
+        self.play(Write(titulo), Write(relacion))
+        self.play(Create(ejes_f), Create(ejes_a), Create(curvas), Write(etiquetas), Write(nombre_a), run_time=2)
+
+        casos = [
+            (1, r"0<x<2:\quad A'(x)=f(x)>0",
+             "A crece: la pendiente es positiva."),
+            (2, r"x=2:\quad A'(2)=0,\quad A(2)=2",
+             "La pendiente cambia de positiva a negativa: máximo."),
+            (3, r"2<x<4:\quad A'(x)=f(x)<0",
+             "A decrece; su valor todavía es positivo."),
+        ]
+        for x, tex, explicacion in casos:
+            marcas = VGroup(
+                Dot(ejes_f.c2p(x, f(x)), color=COLOR_F),
+                Dot(ejes_a.c2p(x, A(x)), color=COLOR_A),
+                Line(
+                    ejes_a.c2p(x - 0.35, A(x) - 0.35 * f(x)),
+                    ejes_a.c2p(x + 0.35, A(x) + 0.35 * f(x)),
+                    color=COLOR_F, stroke_width=6,
+                ),
+            )
+            expresion = MathTex(tex, font_size=34).move_to(DOWN * 2.65)
+            nota = Text(explicacion, font_size=24).to_edge(DOWN, buff=0.3)
+            grupo = VGroup(marcas, expresion, nota)
+            self.play(FadeIn(grupo))
+            self.wait(3)
+            self.play(FadeOut(grupo))
+
+        self.play(*[FadeOut(objeto) for objeto in self.mobjects])
 
 class ConclusionYCreditos(Scene):
      def construct(self):
