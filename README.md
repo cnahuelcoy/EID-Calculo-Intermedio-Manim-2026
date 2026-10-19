@@ -4,7 +4,7 @@
 ## 1. Información del proyecto
 
 - **Proyecto:** Teorema Fundamental del Cálculo – Parte I
-- **Asignatura:** Cálculo Intermedio (MAT1188)
+- **Asignatura:** Cálculo Intermedio (MAT1134)
 - **Universidad:** Universidad Católica de Temuco (UCT)
 - **Evaluación:** Evaluación Integrada de Desempeño (EID)
 - **Grupo:** 8
@@ -103,7 +103,7 @@ Estos comandos generan las escenas en **1920 × 1080 a 30 FPS**. Los archivos se
 
 ## 7. Video final
 
-- **Archivo:** `MAT1188_EID_G08_2026.mp4`
+- **Archivo:** `MAT1134_EID_G08_2026.mp4`
 - **Duración:** 5 minutos y 20 segundos
 - **Enlace:** [Ver video final en Google Drive](https://drive.google.com/file/d/1M_T0kTUDxF6cbX-dvAoLRpGABCmDk_m6/view?usp=sharing)
 
